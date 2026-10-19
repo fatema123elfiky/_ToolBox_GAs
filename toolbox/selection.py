@@ -1,18 +1,25 @@
+from abc import ABC, abstractmethod
 import random 
 
-def roullette_wheel(pop, fitness, numofparents):
-    selected = []
+class Selection(ABC):
+    @abstractmethod
+    def select(self, pop, fitness, numofparents):
+        pass
 
-    for _ in range(numofparents):
-        R = random.uniform(0, sum(fitness))
+class RouletteWheel(Selection):
+    def select(self, pop, fitness, numofparents):
+        selected = []
 
-        p = 0
+        for _ in range(numofparents):
+            R = random.uniform(0, sum(fitness))
 
-        for i in range(len(pop)):
-            p += fitness[i]
+            p = 0
 
-            if p >= R:
-                selected.append(pop[i])
-                break
+            for i in range(len(pop)):
+                p += fitness[i]
 
-    return selected
+                if p >= R:
+                    selected.append(pop[i])
+                    break
+
+        return selected
