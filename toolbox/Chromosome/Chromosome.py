@@ -7,12 +7,34 @@ T = TypeVar('T')
 
 class Chromosome(ABC, Generic[T]):
     def __init__(self, genes: list[T]):
-        self.genes = genes
+        self.genes = list(genes)
 
     def GetRandomChromosome(self):
         new = copy.copy(self)
         new.genes = self.GenerateRandomChromosome()
         return new
+
+    def clone(self):
+        new = copy.copy(self)
+        new.genes = copy.deepcopy(self.genes)
+        return new
+
+    def __len__(self) -> int:
+        return len(self.genes)
+
+    def __getitem__(self, index):
+        return self.genes[index]
+
+    def __setitem__(self, index, value):
+        self.genes[index] = value
+
+    def __eq__(self, other) -> bool:
+        if isinstance(other, Chromosome):
+            return self.genes == other.genes
+        return False
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(genes={self.genes})"
 
     @abstractmethod
     def GenerateRandomChromosome(self) -> list[T]:
@@ -26,7 +48,7 @@ class Chromosome(ABC, Generic[T]):
 class SimpleChromosome(Chromosome[T], ABC):
     def __init__(self, genes: list[T]):
         super().__init__(genes)
-        
+
     @abstractmethod
     def GenerateRandomGene(self) -> T:
         pass
@@ -48,7 +70,7 @@ class BinaryChromosome(SimpleChromosome[int]):
         return random.randint(0, 1)
 
     def Validate(self, genes: list[int]) -> bool:
-        return all(gene in [0, 1] for gene in genes)
+        return len(genes) == self.size and all(gene in (0, 1) for gene in genes)
 
 
 class IntegerChromosome(SimpleChromosome[int]):
@@ -66,7 +88,7 @@ class IntegerChromosome(SimpleChromosome[int]):
         return random.randint(self.LowerBound, self.UpperBound)
 
     def Validate(self, genes: list[int]) -> bool:
-        return all(self.LowerBound <= gene <= self.UpperBound for gene in genes)
+        return len(genes) == self.size and all(self.LowerBound <= gene <= self.UpperBound for gene in genes)
 
 
 class FloatChromosome(SimpleChromosome[float]):
@@ -89,22 +111,24 @@ class FloatChromosome(SimpleChromosome[float]):
         return round(random.uniform(self.LowerBound, self.UpperBound), self.AfterPoint)
 
     def Validate(self, genes: list[float]) -> bool:
-        return all(self.LowerBound <= gene <= self.UpperBound for gene in genes)
+        return len(genes) == self.size and all(self.LowerBound <= gene <= self.UpperBound for gene in genes)
 
 
 class PermutationChromosome(Chromosome[int]):
-    def __init__(self, size: int, genes: list[int] | None = None):
+    def __init__(self, size: int, genes: list[int] | None = None, start_gene: int = 1):
         self.size = size
+        self.start_gene = start_gene
         if genes is None:
             genes = self.GenerateRandomChromosome()
         super().__init__(genes)
         if not self.Validate(self.genes):
-            raise ValueError("Invalid genes for PermutationChromosome. Genes must be a permutation of integers from 1 to size.")
+            raise ValueError(f"Invalid genes for PermutationChromosome. Genes must be a permutation of integers from {self.start_gene} to {self.start_gene + self.size - 1}.")
 
     def Validate(self, genes: list[int]) -> bool:
-        return sorted(genes) == list(range(1, self.size + 1))
+        expected = list(range(self.start_gene, self.start_gene + self.size))
+        return sorted(genes) == expected
 
     def GenerateRandomChromosome(self) -> list[int]:
-        genes = list(range(1, self.size + 1))
+        genes = list(range(self.start_gene, self.start_gene + self.size))
         random.shuffle(genes)
         return genes

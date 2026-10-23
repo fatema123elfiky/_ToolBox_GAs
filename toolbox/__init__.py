@@ -11,10 +11,14 @@ from toolbox.Types import (
     ChromosomePair,
     PairedPopulation,
     FitnessFunction,
+    FeasibilityFunction,
+    PenaltyFunction,
+    RepairFunction,
 )
 from toolbox.Mutation import (
     Mutation,
     FlibMutation,
+    FlipMutation,
     RandomMutation,
     SwapMutation,
     InsertMutation,
@@ -39,6 +43,9 @@ from toolbox.Replacement import (
     FullReplacement,
     MixedReplacement,
 )
+from toolbox.GeneticAlgorithm import (
+    GeneticAlgorithm,
+)
 
 __all__ = [
     "Chromosome",
@@ -51,8 +58,12 @@ __all__ = [
     "ChromosomePair",
     "PairedPopulation",
     "FitnessFunction",
+    "FeasibilityFunction",
+    "PenaltyFunction",
+    "RepairFunction",
     "Mutation",
     "FlibMutation",
+    "FlipMutation",
     "RandomMutation",
     "SwapMutation",
     "InsertMutation",
@@ -70,4 +81,5 @@ __all__ = [
     "Replacement",
     "FullReplacement",
     "MixedReplacement",
+    "GeneticAlgorithm",
 ]
