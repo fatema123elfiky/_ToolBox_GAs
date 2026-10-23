@@ -84,3 +84,8 @@ python cvrp/main.py
 python -m unittest tests/test_assignment.py
 ```
 *(All 18 tests execute and pass in ~1.4 seconds)*
+# _ToolBox_GAs
+
+## Architecture
+
+![Toolbox Architecture](imgs/Toolbox.drawio.png)

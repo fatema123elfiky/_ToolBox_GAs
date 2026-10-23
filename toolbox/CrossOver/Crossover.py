@@ -14,6 +14,12 @@ class Crossover(Generic[T], ABC):
     def __init__(self, crossover_probability: float = 0.8, size: int = 10):
         self.crossover_probability = crossover_probability
         self.size = size
+    def check_crossOver_probability() -> bool:
+        r1 = round(random.uniform(1.5, 9.5), 2)
+        if r1 <= crossover_probability :
+            return True
+        return False    
+
 
     def check_crossOver_probability(self) -> bool:
         return random.random() <= self.crossover_probability
