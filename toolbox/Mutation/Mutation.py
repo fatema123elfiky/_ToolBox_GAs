@@ -109,7 +109,7 @@ class InversionMutation(Mutation[PermutationChromosome]):
                 raise ValueError("Invalid range for InversionMutation. Range must be within the chromosome bounds.")
         else:
             pt1 = random.randint(0, len(chromosome.genes) - 2)
-            pt2 = random.randint(pt1 + 1, len(chromosome.genes))
+            pt2 = random.randint(pt1 + 2, len(chromosome.genes))
             start, end = pt1, pt2
 
         chromosome.genes[start:end] = chromosome.genes[start:end][::-1]

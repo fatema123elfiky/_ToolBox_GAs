@@ -72,19 +72,20 @@ class MultiPointCrossover(Crossover[SimpleChromosome]):
     def crossover(self, Parents: list[tuple[SimpleChromosome, SimpleChromosome]]) -> list[tuple[SimpleChromosome, SimpleChromosome]]:
         returned_offspring: list[tuple[SimpleChromosome, SimpleChromosome]] = []
         for chromosome_one, chromosome_two in Parents:
-            if self.check_crossOver_probability() and self.size > 2:
-                num_pts = min(self.NumberOfPoints, self.size - 1)
-                self.Locations = sorted(random.sample(range(0, self.size - 1), num_pts))
+            cur_size = min(len(chromosome_one.genes), len(chromosome_two.genes))
+            if self.check_crossOver_probability() and cur_size > 2:
+                num_pts = min(self.NumberOfPoints, cur_size - 1)
+                self.Locations = sorted(random.sample(range(0, cur_size - 1), num_pts))
                 genes_one, genes_two = [], []
                 shuffle: bool = False
                 idx_r2 = 0
-                for idx in range(self.size):
+                for idx in range(cur_size):
                     if shuffle:
-                        genes_two.append(chromosome_one.genes[idx])
                         genes_one.append(chromosome_two.genes[idx])
+                        genes_two.append(chromosome_one.genes[idx])
                     else:
-                        genes_two.append(chromosome_two.genes[idx])
                         genes_one.append(chromosome_one.genes[idx])
+                        genes_two.append(chromosome_two.genes[idx])
 
                     if idx_r2 < len(self.Locations) and idx == self.Locations[idx_r2]:
                         idx_r2 += 1

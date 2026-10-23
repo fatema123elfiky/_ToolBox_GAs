@@ -108,7 +108,8 @@ class FloatChromosome(SimpleChromosome[float]):
             raise ValueError("Invalid genes for FloatChromosome. Genes must be within the given bounds.")
 
     def GenerateRandomGene(self) -> float:
-        return round(random.uniform(self.LowerBound, self.UpperBound), self.AfterPoint)
+        val = round(random.uniform(self.LowerBound, self.UpperBound), self.AfterPoint)
+        return max(self.LowerBound, min(self.UpperBound, val))
 
     def Validate(self, genes: list[float]) -> bool:
         return len(genes) == self.size and all(self.LowerBound <= gene <= self.UpperBound for gene in genes)

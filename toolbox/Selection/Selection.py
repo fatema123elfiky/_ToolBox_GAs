@@ -21,6 +21,8 @@ class TournamentSelection(Selection):
     def select(self, population: Population, num_parents: int) -> PairedPopulation:
         if not population:
             return []
+        if self.fitness_function is None:
+            raise ValueError("Fitness function must be provided to TournamentSelection.")
 
         selected: list[Chromosome] = []
         k = min(self.tournament_size, len(population))
@@ -48,6 +50,8 @@ class RouletteWheelSelection(Selection):
     def select(self, population: Population, num_parents: int) -> PairedPopulation:
         if not population:
             return []
+        if self.fitness_function is None:
+            raise ValueError("Fitness function must be provided to RouletteWheelSelection.")
 
         fitness_values = [float(self.fitness_function(c)) for c in population]
 
