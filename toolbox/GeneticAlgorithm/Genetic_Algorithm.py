@@ -124,6 +124,8 @@ class GeneticAlgorithm(Generic[T]):
         self.population: list[T] = []
         if population is not None:
             self.population = list(population)
+            if "population_size" not in kwargs and "pop_size" not in kwargs and population_size == self.DEFAULT_POPULATION_SIZE:
+                self.population_size = len(self.population)
         elif self.ChromosomePrototype is not None:
             self.population = self.GeneratePopulation()
 

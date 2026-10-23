@@ -147,10 +147,37 @@ def cvrp_penalty_function(chromosome: PermutationChromosome) -> float:
         return 0.0
     return float(20000 + 1000 * excess)
 
+def cvrp_repair_function(chromosome: PermutationChromosome) -> PermutationChromosome:
+    """
+    Repairs an infeasible CVRP permutation into a valid feasible permutation
+    by ensuring each vehicle route is assigned one customer of demand 8, 4, 2, and 1.
+    """
+    by_demand: dict[int, list[int]] = {8: [], 4: [], 2: [], 1: []}
+    for node in chromosome.genes:
+        by_demand[DEMANDS[node]].append(node)
+
+    repaired_genes: list[int] = []
+    for v in range(NUM_VEHICLES):
+        vehicle_nodes = [
+            by_demand[8][v],
+            by_demand[4][v],
+            by_demand[2][v],
+            by_demand[1][v],
+        ]
+        repaired_genes.extend(vehicle_nodes)
+
+    repaired = chromosome.clone()
+    repaired.genes = repaired_genes
+    return repaired
+
 def cvrp_fitness_evaluation(chromosome: PermutationChromosome) -> float:
     is_feasible, routes, distance, _ = split_chromosome_to_routes(chromosome.genes)
     if is_feasible:
         opt_routes = [optimize_single_route_2opt(r) for r in routes]
+        # Align chromosome genes with the 2-opt locally optimized routes (Lamarckian GA)
+        flattened = [node for r in opt_routes for node in r]
+        if len(flattened) == len(chromosome.genes):
+            chromosome.genes = flattened
         total_d = sum(route_cost(r) for r in opt_routes)
         return float(-total_d)
     return float(-distance)
@@ -215,10 +242,10 @@ def validate_solution(routes):
 # ==============================================================================
 
 def solve_cvrp(
-    population_size: int = 80,
+    population_size: int = 100,
     total_generations: int = 150,
     crossover_prob: float = 0.85,
-    mutation_prob: float = 0.25,
+    mutation_prob: float = 0.30,
     tournament_size: int = 3,
     verbose: bool = False,
     infeasible_handling: str = "penalty",
@@ -249,6 +276,7 @@ def solve_cvrp(
         total_generations=total_generations,
         feasibility_function=cvrp_feasibility_check,
         penalty_function=cvrp_penalty_function,
+        repair_function=cvrp_repair_function,
         infeasible_handling=infeasible_handling,
         maximize=True,
         verbose=verbose,

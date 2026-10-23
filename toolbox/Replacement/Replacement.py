@@ -20,13 +20,23 @@ class FullReplacement(Replacement):
     def replace(self, population: Population, offspring: Population) -> Population:
         target_size = len(population)
         if self.elitism > 0 and population:
+            if self.fitness_function is None:
+                raise ValueError("Fitness function must be provided to FullReplacement when elitism > 0.")
             elites = sorted(population, key=self.fitness_function, reverse=self.maximize)[:self.elitism]
             elites = [c.clone() for c in elites]
             remaining_slots = max(0, target_size - len(elites))
             sorted_offspring = sorted(offspring, key=self.fitness_function, reverse=self.maximize)
             new_pop = elites + [c.clone() for c in sorted_offspring[:remaining_slots]]
+            # Fill with clones from offspring or population if fewer than target_size
+            while len(new_pop) < target_size and (offspring or population):
+                source = offspring if offspring else population
+                new_pop.append(random.choice(source).clone())
             return new_pop
-        return [c.clone() for c in offspring[:target_size]]
+        new_pop = [c.clone() for c in offspring[:target_size]]
+        while len(new_pop) < target_size and (offspring or population):
+            source = offspring if offspring else population
+            new_pop.append(random.choice(source).clone())
+        return new_pop
 
 
 class MixedReplacement(Replacement):
@@ -35,6 +45,8 @@ class MixedReplacement(Replacement):
         self.strong = strong
 
     def replace(self, population: Population, offspring: Population) -> Population:
+        if self.fitness_function is None:
+            raise ValueError("Fitness function must be provided to MixedReplacement.")
         target_size = len(population)
         strong_count = self.strong if self.strong is not None else max(1, target_size // 2)
         strong_count = min(strong_count, target_size)
