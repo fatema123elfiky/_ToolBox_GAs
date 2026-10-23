@@ -1,5 +1,6 @@
 from toolbox.Chromosome.Chromosome import (
     Chromosome,
+    
     SimpleChromosome,
     BinaryChromosome,
     IntegerChromosome,
