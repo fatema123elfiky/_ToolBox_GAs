@@ -1,9 +1,11 @@
-from toolbox import *
 from toolbox.Types.Types import (
     Population,
     ChromosomePair,
     PairedPopulation,
     FitnessFunction,
+    FeasibilityFunction,
+    PenaltyFunction,
+    RepairFunction,
 )
 
 __all__ = [
@@ -11,4 +13,7 @@ __all__ = [
     "ChromosomePair",
     "PairedPopulation",
     "FitnessFunction",
+    "FeasibilityFunction",
+    "PenaltyFunction",
+    "RepairFunction",
 ]
