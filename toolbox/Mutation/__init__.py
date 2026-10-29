@@ -1,6 +1,7 @@
 from toolbox.Mutation.Mutation import (
     Mutation,
     FlibMutation,
+    FlipMutation,
     RandomMutation,
     SwapMutation,
     InsertMutation,
@@ -12,6 +13,7 @@ from toolbox.Mutation.Mutation import (
 __all__ = [
     "Mutation",
     "FlibMutation",
+    "FlipMutation",
     "RandomMutation",
     "SwapMutation",
     "InsertMutation",
